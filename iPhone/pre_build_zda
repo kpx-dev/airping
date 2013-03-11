@@ -1,0 +1,59 @@
+#!/bin/bash
+
+#
+# creates link to zda fwk 
+# depends on par_dirs perl script
+#
+# searches current directory and parent directories
+# this means it will find an appropriate build
+#
+
+PATH=$PATH:.
+ZDA_FWK=zda.Framework
+BUILD_DIR=`pwd`
+
+#
+#  look for fwk in path
+#
+#
+function check_path 
+{
+  echo searching \"$1\" for \"$ZDA_FWK\" 
+
+  if [ -e "$1/$ZDA_FWK" ] ; then
+    echo "$1/$ZDA_FWK" found creating link...
+    ln -s  "$1/$ZDA_FWK"  "$ZDA_FWK"  2>/dev/null
+    exit 0
+  fi
+
+} 
+
+#remove existing link if present
+ZDA_LINK=`pwd`/${ZDA_FWK}
+if [ -h ${ZDA_LINK} ] ;then
+  echo removing link to zda ${ZDA_LINK}
+  rm ${ZDA_LINK}
+fi
+
+
+if [ -d ${ZDA_LINK} ] ;then
+  echo zda dir already present ${ZDA_LINK} will use
+  exit 0
+fi
+
+echo zda fwk not in $BUILD_DIR
+
+#get parent dirs
+par_dirs > par.txt
+
+while read line      
+do      
+  check_path "$line"
+done <par.txt  
+
+#use shared area
+check_path "/Users/Shared"
+
+exit 1
+
+

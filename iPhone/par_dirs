@@ -1,0 +1,30 @@
+#!/usr/bin/perl
+#fileSpec.pl
+
+use strict;
+use File::Spec::Functions qw(:ALL);
+use Cwd 'realpath';
+
+my $curdir = File::Spec::Functions::curdir ();
+my $real_apth = absolutize ($curdir);
+my @dirs = File::Spec->splitdir( $real_apth );
+my $anumb = @dirs;
+
+for ( ; $anumb >= 1; $anumb--)
+{
+  my $tmp_path = "";
+  my $fnumb = 0;
+
+  for (  ; $fnumb < $anumb ; $fnumb++) 
+  {
+    $tmp_path = $tmp_path . "/" . $dirs[$fnumb]; 
+  }
+  print  $tmp_path . "\n";
+}
+
+sub absolutize{
+  my ($file) = @_;
+  return $file if (File::Spec::Functions::file_name_is_absolute ($file));
+  return File::Spec::Functions::rel2abs ($file);
+}
+
